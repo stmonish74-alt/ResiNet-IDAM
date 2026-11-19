@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d18">
+  <title>ResiNet-IDAM | Security Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#" aria-label="ResiNet-IDAM home">
+      <span class="brand-mark"><i data-lucide="shield-check"></i></span>
+      <span><b>ResiNet<span class="brand-accent">-IDAM</span></b><small>THREAT DEFENSE PLATFORM</small></span>
+    </a>
+    <div class="nav-label">WORKSPACE</div>
+    <nav class="nav-list" aria-label="Main navigation">
+      <button class="nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span>Security Dashboard</span><em>01</em></button>
+      <button class="nav-item" data-page="detection"><i data-lucide="brain-circuit"></i><span>AI Intrusion Detection</span><em>02</em></button>
+      <button class="nav-item" data-page="datasets"><i data-lucide="database"></i><span>IT Dataset Explorer</span><em>03</em></button>
+      <button class="nav-item" data-page="identity"><i data-lucide="fingerprint"></i><span>Identity & Access</span><em>04</em></button>
+      <button class="nav-item" data-page="zero-trust"><i data-lucide="shield-check"></i><span>Zero-Trust Security</span><em>05</em></button>
+      <button class="nav-item" data-page="monitoring"><i data-lucide="activity"></i><span>Adaptive Monitoring</span><em>06</em></button>
+      <button class="nav-item" data-page="reports"><i data-lucide="file-chart-column"></i><span>Reports & Audit Logs</span><em>07</em></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-status"><span class="pulse-dot"></span><div><b>Platform status</b><small id="backend-status">Checking backend…</small></div></div>
+      <div class="profile"><div class="avatar">RA</div><div><b>ResiNet Admin</b><small>Administrator workspace</small></div><i data-lucide="chevron-up"></i></div>
+      <div class="sidebar-foot">RESINET-IDAM <span>v1.0.0 · STAGE 1</span></div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-button mobile-menu" id="menu-toggle" aria-label="Toggle menu"><i data-lucide="menu"></i></button>
+        <div class="breadcrumb">Workspace <i data-lucide="chevron-right"></i> <b id="breadcrumb-current">Security Dashboard</b></div>
+      </div>
+      <div class="topbar-right">
+        <div class="environment"><span class="pulse-dot"></span> IT ENVIRONMENT</div>
+        <span class="top-date" id="current-date"></span>
+        <button class="icon-button notification-button" title="Notifications"><i data-lucide="bell"></i><span></span></button>
+        <div class="top-avatar">RA</div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <section class="page active" id="page-dashboard">
+        <div class="welcome-row">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> SECURITY OPERATIONS CENTER</div><h1>Security <span>Overview</span></h1><p class="subheading">Your IT network security posture, at a glance.</p></div>
+          <div class="welcome-actions"><span class="demo-tag"><i data-lucide="flask-conical"></i> DEMO DATA</span><button class="btn btn-secondary" id="refresh-dashboard"><i data-lucide="refresh-cw"></i> Refresh view</button></div>
+        </div>
+        <div class="notice"><i data-lucide="info"></i><span><b>Prototype mode:</b> Dashboard values are illustrative demonstration data, not measurements from a live network.</span></div>
+        <div class="metric-grid">
+          <article class="metric-card"><div class="metric-top"><span>Network events</span><span class="metric-icon cyan"><i data-lucide="activity"></i></span></div><div class="metric-value" id="metric-events">—</div><div class="metric-bottom"><span class="metric-caption">Events in demo dataset</span><span class="metric-chip neutral">Overview</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Threats detected</span><span class="metric-icon red"><i data-lucide="shield-alert"></i></span></div><div class="metric-value" id="metric-threats">—</div><div class="metric-bottom"><span class="metric-caption">Illustrative threat count</span><span class="metric-chip danger">Attention</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Access allowed</span><span class="metric-icon green"><i data-lucide="shield-check"></i></span></div><div class="metric-value" id="metric-allowed">—</div><div class="metric-bottom"><span class="metric-caption">Demo policy decisions</span><span class="metric-chip success">Allowed</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Access denied</span><span class="metric-icon amber"><i data-lucide="shield-x"></i></span></div><div class="metric-value" id="metric-denied">—</div><div class="metric-bottom"><span class="metric-caption">Demo policy decisions</span><span class="metric-chip warning">Blocked</span></div></article>
+        </div>
+        <div class="content-grid">
+          <article class="panel traffic-panel"><div class="panel-heading"><div><h3>Network activity</h3><p>Illustrative activity profile across the day</p></div><span class="panel-period">24 HOURS <i data-lucide="chevron-down"></i></span></div><div class="chart-wrap"><div class="chart-y"><span>60</span><span>45</span><span>30</span><span>15</span><span>0</span></div><div class="chart-main"><div class="chart-grid"><span></span><span></span><span></span><span></span><span></span></div><svg id="traffic-chart" viewBox="0 0 700 210" preserveAspectRatio="none" role="img" aria-label="Illustrative network activity chart"></svg><div class="chart-x"><span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>23:00</span></div></div></div><div class="chart-legend"><span><i class="legend-dot cyan-dot"></i> Network activity index</span><span class="legend-note">Demo visualization · not live telemetry</span></div></article>
+          <article class="panel threat-panel"><div class="panel-heading"><div><h3>Threat distribution</h3><p>Illustrative event classification</p></div><button class="more-button" aria-label="More options"><i data-lucide="more-horizontal"></i></button></div><div class="donut-area"><div class="donut" id="threat-donut"><div class="donut-center"><b>100%</b><small>DEMO EVENTS</small></div></div></div><div class="legend-list"><div><span><i class="legend-dot green-dot"></i> Normal</span><b>72%</b></div><div><span><i class="legend-dot amber-dot"></i> Suspicious</span><b>19%</b></div><div><span><i class="legend-dot red-dot"></i> Malicious</span><b>9%</b></div></div></article>
+        </div>
+        <article class="panel events-panel"><div class="panel-heading"><div><h3>Recent security events</h3><p>Latest entries from the sample event feed</p></div><button class="text-button" data-goto="reports">View audit log <i data-lucide="arrow-up-right"></i></button></div><div class="table-scroll"><table><thead><tr><th>TIME</th><th>EVENT</th><th>SEVERITY</th><th>SOURCE IP</th><th>RECOMMENDED ACTION</th></tr></thead><tbody id="events-body"><tr><td colspan="5" class="empty-cell">Loading sample events…</td></tr></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-detection">
+        <div class="page-heading"><div class="eyebrow">INTELLIGENCE ENGINE</div><h1>AI Intrusion <span>Detection</span></h1><p class="subheading">Train the Random Forest model and classify individual IT network-flow records.</p></div>
+        <div class="notice"><i data-lucide="info"></i><span>This prototype uses the processed CSV dataset and a Random Forest classifier. Upload a dataset with a <b>label</b> column in IT Dataset Explorer before training. The model is a research demo, not a live network sensor.</span></div>
+
+        <div class="feature-grid">
+          <article class="panel feature-card"><div class="feature-icon purple"><i data-lucide="brain-circuit"></i></div><h3>Model training</h3><p>Train the classifier using the latest processed IT dataset.</p><span class="status-pill" id="ai-model-status">MODEL STATUS UNKNOWN</span></article>
+          <article class="panel feature-card"><div class="feature-icon cyan"><i data-lucide="chart-no-axes-combined"></i></div><h3>Model evaluation</h3><p>Review metrics calculated from the held-out test split.</p><span class="status-pill pending">HELD-OUT TEST</span></article>
+          <article class="panel feature-card"><div class="feature-icon amber"><i data-lucide="scan-search"></i></div><h3>Intrusion prediction</h3><p>Submit a network-flow record and view its predicted class and confidence.</p><span class="status-pill pending">ON-DEMAND ANALYSIS</span></article>
+        </div>
+
+        <article class="panel ai-action-panel">
+          <div class="panel-heading"><div><h3>Train intrusion detection model</h3><p>Uses datasets/processed_dataset.csv saved by the dataset uploader.</p></div><span class="status-pill pending" id="ai-training-badge">NOT TRAINED</span></div>
+          <button class="btn btn-primary" type="button" id="train-ai-model"><i data-lucide="brain-circuit"></i> Train AI Model</button>
+          <p class="ai-message" id="ai-training-status" role="status" aria-live="polite">Ready to train. Upload a labelled CSV dataset first if you have not already done so.</p>
+        </article>
+
+        <section id="ai-evaluation-results" hidden>
+          <div class="panel-heading"><div><h3>Model evaluation results</h3><p id="ai-evaluation-subtitle">Results from the held-out test split</p></div><span class="status-pill" id="ai-evaluation-badge">TRAINED</span></div>
+          <div class="metric-grid compact-metrics" id="ai-evaluation-metrics"></div>
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Confusion matrix</h3><p>Rows are actual labels; columns are predicted labels, in the order shown.</p></div></div>
+            <div class="table-scroll"><table><thead id="ai-confusion-head"></thead><tbody id="ai-confusion-body"></tbody></table></div>
+          </article>
+        </section>
+
+        <article class="panel ai-predict-panel">
+          <div class="panel-heading"><div><h3>Test a network-flow record</h3><p>Enter the same feature columns used by your training dataset. Do not include the label column.</p></div></div>
+          <form id="ai-prediction-form" class="ai-prediction-form">
+            <label>Duration<input name="duration" type="number" step="any" value="2" required></label>
+            <label>Protocol type<input name="protocol_type" type="text" value="tcp" required></label>
+            <label>Service<input name="service" type="text" value="ftp" required></label>
+            <label>Source bytes<input name="src_bytes" type="number" step="any" value="5000" required></label>
+            <label>Destination bytes<input name="dst_bytes" type="number" step="any" value="100" required></label>
+            <label>Failed logins<input name="failed_logins" type="number" step="any" value="5" required></label>
+            <button class="btn btn-primary" type="submit" id="ai-predict-button"><i data-lucide="scan-search"></i> Analyze Network Record</button>
+          </form>
+          <p class="ai-message" id="ai-prediction-status" role="status" aria-live="polite">Train the model before running a prediction.</p>
+          <div class="ai-prediction-result" id="ai-prediction-result" hidden>
+            <div class="ai-prediction-top"><div><span class="eyebrow">MODEL PREDICTION</span><h2 id="ai-prediction-label">—</h2></div><div class="ai-confidence"><b id="ai-prediction-confidence">—</b><small>CONFIDENCE</small></div></div>
+            <div id="ai-class-probabilities" class="ai-probability-list"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="page-datasets">
+        <div class="page-heading"><div class="eyebrow">DATA MANAGEMENT</div><h1>IT Dataset <span>Explorer</span></h1><p class="subheading">Import and inspect network-security CSV datasets for the AI pipeline.</p></div>
+        <div class="notice"><i data-lucide="server"></i><span>Server processing is enabled. The CSV is sent to Flask, checked, cleaned and saved in the project's datasets folder. Use a small, non-sensitive sample dataset for this academic prototype.</span></div>
+
+        <article class="panel upload-panel">
+          <div class="upload-icon"><i data-lucide="file-up"></i></div>
+          <h3>Upload an IT network dataset</h3>
+          <p>Select a CSV containing network-flow or intrusion-detection records. The Flask backend will preprocess it.</p>
+          <form id="server-dataset-form" class="server-upload-form">
+            <input type="file" id="server-dataset-file" accept=".csv,text/csv" required>
+            <button class="btn btn-primary" type="submit" id="server-upload-button"><i data-lucide="upload"></i> Upload &amp; Process Dataset</button>
+          </form>
+          <p class="upload-hint" id="server-upload-status" role="status" aria-live="polite">CSV format · Select a file to begin.</p>
+        </article>
+
+        <section id="server-dataset-results" hidden>
+          <div class="panel-heading"><div><h3>Server preprocessing results</h3><p id="server-dataset-filename">Processed dataset</p></div><span class="status-pill" id="server-dataset-status">PROCESSED</span></div>
+          <div class="metric-grid compact-metrics" id="server-dataset-metrics"></div>
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Detected columns</h3><p>Column names returned by Flask</p></div></div>
+            <div id="server-dataset-columns" class="dataset-column-list"></div>
+          </article>
+          <article class="panel preview-panel">
+            <div class="panel-heading"><div><h3>Processed data preview</h3><p>First 10 rows returned by the backend</p></div></div>
+            <div class="table-scroll"><table><thead id="server-preview-head"></thead><tbody id="server-preview-body"></tbody></table></div>
+          </article>
+        </section>
+
+        <article class="panel preview-panel">
+          <div class="panel-heading"><div><h3>Quick browser preview</h3><p id="dataset-summary">No dataset selected</p></div><span class="status-pill pending" id="dataset-status">AWAITING FILE</span></div>
+          <p class="upload-hint">Optional local preview using the original browser-only file selector:</p>
+          <label class="btn btn-secondary file-label" for="csv-file"><i data-lucide="eye"></i> Preview locally</label>
+          <input type="file" id="csv-file" accept=".csv,text/csv" hidden>
+          <div class="table-scroll"><table><thead id="preview-head"><tr><th>DATASET PREVIEW</th></tr></thead><tbody id="preview-body"><tr><td class="empty-cell">Choose a CSV file to preview its columns and first records in your browser.</td></tr></tbody></table></div>
+          <span class="upload-hint" id="upload-hint">This optional preview does not upload the file.</span>
+        </article>
+      </section>
+
+      <section class="page" id="page-identity">
+        <div class="page-heading"><div class="eyebrow">IDENTITY GOVERNANCE</div><h1>Identity & <span>Access</span></h1><p class="subheading">A workspace for managing identities, roles and access permissions.</p></div>
+        <div class="notice"><i data-lucide="info"></i><span>Authentication and persistent user management are scheduled for Stage 4. No real accounts are managed yet.</span></div>
+        <div class="metric-grid compact-metrics"><article class="metric-card"><div class="metric-top"><span>Identity provider</span><span class="metric-icon cyan"><i data-lucide="fingerprint"></i></span></div><div class="metric-value word-value">Local prototype</div><div class="metric-bottom"><span class="metric-caption">Integration pending</span></div></article><article class="metric-card"><div class="metric-top"><span>Access roles</span><span class="metric-icon purple"><i data-lucide="users"></i></span></div><div class="metric-value">3</div><div class="metric-bottom"><span class="metric-caption">Planned role templates</span></div></article></div>
+        <article class="panel"><div class="panel-heading"><div><h3>Planned role matrix</h3><p>Proposed roles for the prototype</p></div></div><div class="table-scroll"><table><thead><tr><th>ROLE</th><th>DASHBOARD</th><th>DATASETS</th><th>POLICY MANAGEMENT</th><th>REPORTS</th></tr></thead><tbody><tr><td><b>Administrator</b></td><td>Full</td><td>Full</td><td>Full</td><td>Full</td></tr><tr><td><b>Security Analyst</b></td><td>View</td><td>Analyze</td><td>Request</td><td>View</td></tr><tr><td><b>Viewer</b></td><td>View</td><td>Restricted</td><td>No access</td><td>View</td></tr></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-zero-trust">
+        <div class="page-heading"><div class="eyebrow">NEVER TRUST · ALWAYS VERIFY</div><h1>Zero-Trust <span>Security</span></h1><p class="subheading">Evaluate identity and device context using the Flask Zero-Trust policy engine.</p></div>
+        <div class="notice"><i data-lucide="info"></i><span>Academic prototype: decisions are evaluated by your local Flask backend and stored in a SQLite audit database. This does not control access to real systems.</span></div>
+        <div class="zt-layout">
+          <article class="panel zt-form">
+            <div class="panel-heading"><div><h3>Zero-Trust access request</h3><p>Submit identity, device, MFA and risk information.</p></div></div>
+            <form id="access-form" class="zt-access-form">
+              <label>Username<input id="zt-user" value="analyst.demo" required></label>
+              <label>User role<select id="zt-role"><option value="administrator">Administrator</option><option value="security_analyst" selected>Security Analyst</option><option value="viewer">Viewer</option><option value="guest">Guest</option></select></label>
+              <label>Requested resource<select id="zt-resource"><option value="Threat analytics">Threat analytics</option><option value="Dataset repository">Dataset repository</option><option value="Policy administration">Policy administration</option><option value="Security dashboard">Security dashboard</option></select></label>
+              <label>Device trust<select id="zt-device"><option value="trusted" selected>Trusted</option><option value="untrusted">Untrusted</option></select></label>
+              <label>MFA verification<select id="zt-mfa"><option value="verified" selected>Verified</option><option value="unverified">Not verified</option></select></label>
+              <label>Risk score (0–100)<input id="zt-risk" type="number" min="0" max="100" value="10" required></label>
+              <button class="btn btn-primary" type="submit" id="zt-evaluate-button"><i data-lucide="shield-check"></i> Evaluate access request</button>
+            </form>
+            <p class="zt-api-message" id="zt-api-message" role="status" aria-live="polite">Ready to evaluate an access request.</p>
+          </article>
+          <article class="panel decision-panel" id="decision-panel"><div class="decision-empty"><div class="placeholder-symbol"><i data-lucide="shield-question"></i></div><h3>Awaiting access request</h3><p>Complete the request details and submit them for a backend policy decision.</p></div></article>
+        </div>
+        <article class="panel zt-audit-panel">
+          <div class="panel-heading"><div><h3>Persistent Zero-Trust audit logs</h3><p>Access decisions retrieved from the SQLite database.</p></div><button class="btn btn-secondary" type="button" id="zt-refresh-logs"><i data-lucide="refresh-cw"></i> Refresh logs</button></div>
+          <div class="table-scroll"><table><thead><tr><th>TIME</th><th>USERNAME</th><th>ROLE</th><th>RESOURCE</th><th>RISK</th><th>DECISION</th><th>REASON</th></tr></thead><tbody id="zt-audit-body"><tr><td colspan="7" class="empty-cell">Loading audit records…</td></tr></tbody></table></div>
+        </article>
+      </section>
+
+      <section class="page" id="page-monitoring">
+        <div class="page-heading"><div class="eyebrow">CONTINUOUS OBSERVABILITY</div><h1>Adaptive <span>Monitoring</span></h1><p class="subheading">A unified view for network behavior, anomalies and response signals.</p></div>
+        <div class="notice"><i data-lucide="info"></i><span>Live packet capture and adaptive model feedback are not enabled in Stage 1. The events shown are sample data.</span></div>
+        <div class="feature-grid"><article class="panel feature-card"><div class="feature-icon cyan"><i data-lucide="network"></i></div><h3>Network telemetry</h3><p>Future integration for authorized IT network-flow telemetry and endpoint activity.</p><span class="status-pill pending">NOT CONNECTED</span></article><article class="panel feature-card"><div class="feature-icon amber"><i data-lucide="bell-ring"></i></div><h3>Alert management</h3><p>Planned severity-based alerts with investigation status and response notes.</p><span class="status-pill pending">PLANNED</span></article><article class="panel feature-card"><div class="feature-icon purple"><i data-lucide="sliders-horizontal"></i></div><h3>Adaptive baseline</h3><p>Planned baseline updates based on validated, normal IT activity.</p><span class="status-pill pending">PLANNED</span></article></div>
+        <article class="panel"><div class="panel-heading"><div><h3>Sample event stream</h3><p>Illustrative events returned by the Flask API</p></div><span class="demo-tag">DEMO FEED</span></div><div id="monitor-event-list" class="monitor-list"></div></article>
+      </section>
+
+      <section class="page" id="page-reports">
+        <div class="page-heading"><div class="eyebrow">SECURITY GOVERNANCE</div><h1>Reports & <span>Audit Logs</span></h1><p class="subheading">Review sample security events, persistent Zero-Trust decisions and model evaluation reports.</p></div>
+        <div class="notice"><i data-lucide="info"></i><span>Zero-Trust decisions below are retrieved from the SQLite audit database. Dashboard event-feed entries remain illustrative sample data.</span></div>
+
+        <div class="metric-grid compact-metrics" id="report-zt-metrics">
+          <article class="metric-card"><div class="metric-top"><span>Total access decisions</span><span class="metric-icon cyan"><i data-lucide="clipboard-list"></i></span></div><div class="metric-value" id="report-total-logs">—</div><div class="metric-bottom"><span class="metric-caption">Persistent Zero-Trust records</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Allowed</span><span class="metric-icon green"><i data-lucide="shield-check"></i></span></div><div class="metric-value" id="report-allowed-logs">—</div><div class="metric-bottom"><span class="metric-caption">Policy decisions</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Denied</span><span class="metric-icon red"><i data-lucide="shield-x"></i></span></div><div class="metric-value" id="report-denied-logs">—</div><div class="metric-bottom"><span class="metric-caption">Blocked requests</span></div></article>
+        </div>
+
+        <article class="panel events-panel">
+          <div class="panel-heading"><div><h3>Persistent Zero-Trust audit log</h3><p>Records loaded from <code>GET /api/zero-trust/logs</code> and stored in SQLite.</p></div><div class="report-actions"><button class="btn btn-secondary" type="button" id="report-refresh-zt"><i data-lucide="refresh-cw"></i> Refresh</button><button class="btn btn-primary" type="button" id="download-zt-audit"><i data-lucide="download"></i> Export Zero-Trust CSV</button></div></div>
+          <p class="upload-hint" id="report-zt-status" role="status" aria-live="polite">Loading persistent audit records…</p>
+          <div class="table-scroll"><table><thead><tr><th>TIME</th><th>USERNAME</th><th>ROLE</th><th>RESOURCE</th><th>RISK</th><th>DECISION</th><th>REASON</th></tr></thead><tbody id="report-zt-audit-body"><tr><td colspan="7" class="empty-cell">Loading audit records…</td></tr></tbody></table></div>
+        </article>
+
+        <article class="panel events-panel" style="margin-top:20px">
+          <div class="panel-heading"><div><h3>Sample security event feed</h3><p>Illustrative entries from the sample event API, not persistent Zero-Trust records.</p></div><button class="btn btn-secondary" id="download-events"><i data-lucide="download"></i> Export sample events</button></div>
+          <div class="table-scroll"><table><thead><tr><th>TIME</th><th>EVENT</th><th>SEVERITY</th><th>SOURCE IP</th><th>ACTION</th></tr></thead><tbody id="audit-body"></tbody></table></div>
+        </article>
+        <div class="report-note"><i data-lucide="file-check-2"></i><div><b>AI evaluation reports</b><p>Accuracy, precision, recall, F1-score and confusion matrix are displayed in the AI Intrusion Detection section after model training. Interpret metrics cautiously when the dataset is small.</p></div></div>
+      </section>
+      <footer class="footer"><span>© 2026 ResiNet-IDAM · Academic IT security prototype</span><span><i class="footer-dot"></i> Flask backend connected</span></footer>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<style>
+  .server-upload-form { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:18px 0 8px; }
+  .server-upload-form input[type="file"] { max-width:100%; padding:10px; border:1px solid var(--border, #263348); border-radius:10px; color:inherit; background:rgba(255,255,255,.03); }
+  .dataset-column-list { display:flex; flex-wrap:wrap; gap:8px; padding:16px; }
+  .dataset-column-list span { display:inline-flex; padding:7px 11px; border:1px solid var(--border, #263348); border-radius:8px; font-size:13px; color:var(--text, #dce7f5); background:rgba(255,255,255,.035); }
+  #server-dataset-results { margin-top:20px; }
+  #server-dataset-metrics .metric-value { font-size:clamp(22px, 3vw, 30px); }
+  #server-dataset-status { display:inline-flex; }
+  .upload-hint.error { color:#ff8585; }
+  .upload-hint.success { color:#59d6a3; }
+  @media (max-width:600px) { .server-upload-form { align-items:stretch; flex-direction:column; } .server-upload-form button { width:100%; } }
+</style>
+<script>
+(() => {
+  const form = document.getElementById("server-dataset-form");
+  if (!form) return;
+
+  const fileInput = document.getElementById("server-dataset-file");
+  const submitButton = document.getElementById("server-upload-button");
+  const status = document.getElementById("server-upload-status");
+  const results = document.getElementById("server-dataset-results");
+
+  function setStatus(message, kind) {
+    status.textContent = message;
+    status.className = "upload-hint" + (kind ? " " + kind : "");
+  }
+
+  function addMetric(container, label, value) {
+    const card = document.createElement("article");
+    card.className = "metric-card";
+    const top = document.createElement("div");
+    top.className = "metric-top";
+    const labelNode = document.createElement("span");
+    labelNode.textContent = label;
+    top.appendChild(labelNode);
+    const valueNode = document.createElement("div");
+    valueNode.className = "metric-value";
+    valueNode.textContent = String(value);
+    card.append(top, valueNode);
+    container.appendChild(card);
+  }
+
+  function renderTable(columns, rows) {
+    const head = document.getElementById("server-preview-head");
+    const body = document.getElementById("server-preview-body");
+    head.replaceChildren();
+    body.replaceChildren();
+
+    const headerRow = document.createElement("tr");
+    columns.forEach((column) => {
+      const th = document.createElement("th");
+      th.textContent = column;
+      headerRow.appendChild(th);
+    });
+    head.appendChild(headerRow);
+
+    if (!rows || rows.length === 0) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = Math.max(columns.length, 1);
+      td.textContent = "No preview rows returned.";
+      tr.appendChild(td);
+      body.appendChild(tr);
+      return;
+    }
+
+    rows.forEach((record) => {
+      const tr = document.createElement("tr");
+      columns.forEach((column) => {
+        const td = document.createElement("td");
+        const value = record[column];
+        td.textContent = value === null || value === undefined ? "" : String(value);
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const file = fileInput.files && fileInput.files[0];
+
+    if (!file) {
+      setStatus("Please choose a CSV file first.", "error");
+      return;
+    }
+    if (!file.name.toLowerCase().endsWith(".csv")) {
+      setStatus("Only .csv files are supported.", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Uploading and processing…";
+    setStatus("Sending CSV to the Flask backend…", "");
+    results.hidden = true;
+
+    try {
+      const response = await fetch("/api/upload-dataset", {
+        method: "POST",
+        body: formData
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.status !== "success") {
+        throw new Error(payload.error || "The server could not process this dataset.");
+      }
+
+      const data = payload.data;
+      const metrics = document.getElementById("server-dataset-metrics");
+      metrics.replaceChildren();
+      addMetric(metrics, "Total rows", data.total_rows);
+      addMetric(metrics, "Total columns", data.total_columns);
+      addMetric(metrics, "Missing values", data.missing_values);
+      addMetric(metrics, "Duplicate rows", data.duplicate_rows);
+      addMetric(metrics, "Rows after processing", data.processed_rows);
+
+      document.getElementById("server-dataset-filename").textContent = data.filename || file.name;
+      const columns = document.getElementById("server-dataset-columns");
+      columns.replaceChildren();
+      (data.columns || []).forEach((column) => {
+        const chip = document.createElement("span");
+        chip.textContent = column;
+        columns.appendChild(chip);
+      });
+
+      renderTable(data.columns || [], data.preview || []);
+      results.hidden = false;
+      setStatus("Dataset uploaded and preprocessed successfully. Saved as datasets/processed_dataset.csv.", "success");
+      results.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (error) {
+      setStatus(error.message || "Upload failed. Check that the Flask server is running.", "error");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = '<i data-lucide="upload"></i> Upload &amp; Process Dataset';
+      if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+      }
+    }
+  });
+})();
+</script>
+
+<style>
+  .ai-action-panel, .ai-predict-panel { margin-top:20px; padding:22px; }
+  .ai-message { margin:14px 0 0; color:var(--muted, #9aa9bd); font-size:13px; line-height:1.6; }
+  .ai-message.error { color:#ff8585; }
+  .ai-message.success { color:#59d6a3; }
+  .ai-prediction-form { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:18px; }
+  .ai-prediction-form label { display:flex; flex-direction:column; gap:7px; color:var(--text, #dce7f5); font-size:13px; }
+  .ai-prediction-form input { width:100%; min-width:0; padding:11px 12px; border:1px solid var(--border, #263348); border-radius:9px; color:inherit; background:rgba(255,255,255,.035); font:inherit; }
+  .ai-prediction-form button { align-self:end; min-height:42px; }
+  .ai-prediction-result { margin-top:18px; padding:18px; border:1px solid var(--border, #263348); border-radius:12px; background:rgba(255,255,255,.025); }
+  .ai-prediction-top { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .ai-prediction-top h2 { margin:5px 0 0; font-family:'Space Grotesk',sans-serif; font-size:26px; text-transform:uppercase; }
+  .ai-prediction-top h2.attack { color:#ff7777; }
+  .ai-prediction-top h2.normal { color:#59d6a3; }
+  .ai-confidence { display:flex; flex-direction:column; align-items:flex-end; }
+  .ai-confidence b { font-size:25px; }
+  .ai-confidence small { color:var(--muted, #9aa9bd); font-size:10px; letter-spacing:1px; }
+  .ai-probability-list { display:grid; gap:10px; margin-top:18px; }
+  .ai-probability-row { display:grid; grid-template-columns:90px 1fr 58px; gap:10px; align-items:center; font-size:12px; }
+  .ai-probability-track { height:8px; overflow:hidden; border-radius:20px; background:rgba(255,255,255,.09); }
+  .ai-probability-fill { height:100%; border-radius:20px; background:#28c99a; }
+  .ai-probability-value { text-align:right; font-variant-numeric:tabular-nums; }
+  #ai-evaluation-results { margin-top:22px; }
+  #ai-evaluation-results .panel { margin-top:14px; padding:20px; }
+  @media(max-width:800px) { .ai-prediction-form { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:520px) { .ai-prediction-form { grid-template-columns:1fr; } .ai-prediction-top { align-items:flex-start; } }
+</style>
+<script>
+(() => {
+  const trainButton = document.getElementById("train-ai-model");
+  const trainStatus = document.getElementById("ai-training-status");
+  const predictionForm = document.getElementById("ai-prediction-form");
+  if (!trainButton || !predictionForm) return;
+
+  const setMessage = (node, message, kind) => {
+    node.textContent = message;
+    node.className = "ai-message" + (kind ? " " + kind : "");
+  };
+
+  const addMetric = (container, label, value) => {
+    const card = document.createElement("article");
+    card.className = "metric-card";
+    const top = document.createElement("div");
+    top.className = "metric-top";
+    const title = document.createElement("span");
+    title.textContent = label;
+    top.appendChild(title);
+    const number = document.createElement("div");
+    number.className = "metric-value";
+    number.textContent = String(value);
+    card.append(top, number);
+    container.appendChild(card);
+  };
+
+  const renderEvaluation = (data) => {
+    const results = document.getElementById("ai-evaluation-results");
+    const metrics = document.getElementById("ai-evaluation-metrics");
+    metrics.replaceChildren();
+    addMetric(metrics, "Accuracy", data.accuracy + "%");
+    addMetric(metrics, "Precision", data.precision + "%");
+    addMetric(metrics, "Recall", data.recall + "%");
+    addMetric(metrics, "F1-score", data.f1_score + "%");
+    addMetric(metrics, "Training records", data.training_records);
+    addMetric(metrics, "Testing records", data.testing_records);
+
+    document.getElementById("ai-evaluation-subtitle").textContent =
+      data.algorithm + " · " + data.total_records + " total records · Classes: " + data.classes.join(", ");
+
+    const labels = data.classes || [];
+    const matrix = data.confusion_matrix || [];
+    const head = document.getElementById("ai-confusion-head");
+    const body = document.getElementById("ai-confusion-body");
+    head.replaceChildren();
+    body.replaceChildren();
+
+    const header = document.createElement("tr");
+    const corner = document.createElement("th");
+    corner.textContent = "ACTUAL / PREDICTED";
+    header.appendChild(corner);
+    labels.forEach(label => {
+      const th = document.createElement("th");
+      th.textContent = label;
+      header.appendChild(th);
+    });
+    head.appendChild(header);
+
+    labels.forEach((label, rowIndex) => {
+      const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.textContent = label;
+      tr.appendChild(th);
+      (matrix[rowIndex] || []).forEach(value => {
+        const td = document.createElement("td");
+        td.textContent = String(value);
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    results.hidden = false;
+  };
+
+  trainButton.addEventListener("click", async () => {
+    trainButton.disabled = true;
+    trainButton.textContent = "Training model…";
+    setMessage(trainStatus, "Sending training request to Flask…", "");
+    try {
+      const response = await fetch("/api/train-model", { method: "POST" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.status !== "success") {
+        throw new Error(payload.error || payload.message || "Model training failed.");
+      }
+      renderEvaluation(payload);
+      document.getElementById("ai-model-status").textContent = "TRAINED SUCCESSFULLY";
+      document.getElementById("ai-training-badge").textContent = "TRAINED";
+      document.getElementById("ai-evaluation-badge").textContent = "EVALUATION READY";
+      setMessage(trainStatus, payload.message + " Saved model: " + payload.model_path, "success");
+      setMessage(document.getElementById("ai-prediction-status"), "Model is trained. You can now analyze a network-flow record.", "success");
+    } catch (error) {
+      setMessage(trainStatus, error.message || "Could not train the model. Check the Flask server and dataset.", "error");
+    } finally {
+      trainButton.disabled = false;
+      trainButton.innerHTML = '<i data-lucide="brain-circuit"></i> Train AI Model';
+      if (window.lucide && typeof window.lucide.createIcons === "function") window.lucide.createIcons();
+    }
+  });
+
+  predictionForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = document.getElementById("ai-predict-button");
+    const formData = new FormData(predictionForm);
+    const record = {};
+    for (const [key, value] of formData.entries()) {
+      record[key] = (key === "protocol_type" || key === "service")
+        ? value.trim()
+        : Number(value);
+    }
+    if (Object.values(record).some(value => value === "" || (typeof value === "number" && !Number.isFinite(value)))) {
+      setMessage(document.getElementById("ai-prediction-status"), "Please enter valid values in every field.", "error");
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Analyzing…";
+    setMessage(document.getElementById("ai-prediction-status"), "Sending record to the trained model…", "");
+    try {
+      const response = await fetch("/api/predict-intrusion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(record)
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.status !== "success") {
+        throw new Error(payload.error || "Prediction failed. Train the model first.");
+      }
+
+      const result = payload.data;
+      const label = document.getElementById("ai-prediction-label");
+      label.textContent = result.prediction;
+      label.className = String(result.prediction).toLowerCase() === "normal" ? "normal" : "attack";
+      document.getElementById("ai-prediction-confidence").textContent = result.confidence + "%";
+
+      const probabilityList = document.getElementById("ai-class-probabilities");
+      probabilityList.replaceChildren();
+      Object.entries(result.class_probabilities || {}).forEach(([className, probability]) => {
+        const row = document.createElement("div");
+        row.className = "ai-probability-row";
+        const name = document.createElement("span");
+        name.textContent = className;
+        const track = document.createElement("div");
+        track.className = "ai-probability-track";
+        const fill = document.createElement("div");
+        fill.className = "ai-probability-fill";
+        fill.style.width = Math.max(0, Math.min(100, Number(probability))) + "%";
+        track.appendChild(fill);
+        const value = document.createElement("b");
+        value.className = "ai-probability-value";
+        value.textContent = probability + "%";
+        row.append(name, track, value);
+        probabilityList.appendChild(row);
+      });
+      document.getElementById("ai-prediction-result").hidden = false;
+      setMessage(document.getElementById("ai-prediction-status"), "Prediction completed successfully.", "success");
+    } catch (error) {
+      setMessage(document.getElementById("ai-prediction-status"), error.message || "Prediction failed.", "error");
+    } finally {
+      button.disabled = false;
+      button.innerHTML = '<i data-lucide="scan-search"></i> Analyze Network Record';
+      if (window.lucide && typeof window.lucide.createIcons === "function") window.lucide.createIcons();
+    }
+  });
+})();
+</script>
+
+
+<style>
+  .zt-access-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-top:16px; }
+  .zt-access-form label { display:flex; flex-direction:column; gap:7px; color:var(--text,#dce7f5); font-size:13px; }
+  .zt-access-form input, .zt-access-form select { width:100%; min-width:0; padding:11px 12px; border:1px solid var(--border,#263348); border-radius:9px; color:inherit; background:#111b2b; font:inherit; }
+  .zt-access-form button { grid-column:1/-1; justify-self:start; }
+  .zt-api-message { margin:13px 0 0; color:var(--muted,#9aa9bd); font-size:13px; }
+  .zt-api-message.error { color:#ff8585; }
+  .zt-api-message.success { color:#59d6a3; }
+  .zt-audit-panel { margin-top:20px; padding:20px; }
+  .zt-decision-result { padding:22px; }
+  .zt-decision-result h2 { margin:8px 0; font-family:'Space Grotesk',sans-serif; font-size:30px; }
+  .zt-decision-result.allow h2 { color:#59d6a3; }
+  .zt-decision-result.deny h2 { color:#ff7777; }
+  .zt-decision-result p { color:var(--muted,#9aa9bd); line-height:1.6; overflow-wrap:anywhere; }
+  .zt-decision-meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:16px; }
+  .zt-decision-meta div { padding:11px; border:1px solid var(--border,#263348); border-radius:9px; }
+  .zt-decision-meta small { display:block; color:var(--muted,#9aa9bd); font-size:10px; text-transform:uppercase; letter-spacing:.8px; }
+  .zt-decision-meta b { display:block; margin-top:5px; overflow-wrap:anywhere; }
+  .zt-log-allow { color:#59d6a3; font-weight:700; }
+  .zt-log-deny { color:#ff7777; font-weight:700; }
+  @media(max-width:620px) { .zt-access-form { grid-template-columns:1fr; } .zt-access-form button { grid-column:auto; width:100%; } .zt-decision-meta { grid-template-columns:1fr; } }
+</style>
+<script>
+(() => {
+  const form = document.getElementById('access-form');
+  const logBody = document.getElementById('zt-audit-body');
+  if (!form || !logBody) return;
+
+  const message = document.getElementById('zt-api-message');
+  const evaluateButton = document.getElementById('zt-evaluate-button');
+  const decisionPanel = document.getElementById('decision-panel');
+  const refreshButton = document.getElementById('zt-refresh-logs');
+
+  function setMessage(text, kind) {
+    message.textContent = text;
+    message.className = 'zt-api-message' + (kind ? ' ' + kind : '');
+  }
+
+  function addCell(row, value, className) {
+    const cell = document.createElement('td');
+    cell.textContent = value === null || value === undefined ? '' : String(value);
+    if (className) cell.className = className;
+    row.appendChild(cell);
+  }
+
+  function renderDecision(result, requestData) {
+    const allowed = result.decision === 'ALLOW';
+    decisionPanel.replaceChildren();
+    const wrap = document.createElement('div');
+    wrap.className = 'zt-decision-result ' + (allowed ? 'allow' : 'deny');
+    const eyebrow = document.createElement('div');
+    eyebrow.className = 'eyebrow';
+    eyebrow.textContent = 'BACKEND POLICY DECISION';
+    const heading = document.createElement('h2');
+    heading.textContent = result.decision;
+    const reason = document.createElement('p');
+    reason.textContent = result.reason;
+    const meta = document.createElement('div');
+    meta.className = 'zt-decision-meta';
+    const fields = [
+      ['Username', requestData.username],
+      ['Resource', requestData.resource],
+      ['Risk score', requestData.risk_score + ' / 100'],
+      ['Audit log ID', result.log_id]
+    ];
+    fields.forEach(([label, value]) => {
+      const item = document.createElement('div');
+      const small = document.createElement('small'); small.textContent = label;
+      const bold = document.createElement('b'); bold.textContent = String(value);
+      item.append(small, bold); meta.appendChild(item);
+    });
+    wrap.append(eyebrow, heading, reason, meta);
+    decisionPanel.appendChild(wrap);
+  }
+
+  async function loadLogs() {
+    logBody.replaceChildren();
+    const loading = document.createElement('tr');
+    const loadingCell = document.createElement('td');
+    loadingCell.colSpan = 7; loadingCell.className = 'empty-cell';
+    loadingCell.textContent = 'Loading audit records…'; loading.appendChild(loadingCell); logBody.appendChild(loading);
+    try {
+      const response = await fetch('/api/zero-trust/logs');
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.status !== 'success') throw new Error(payload.error || 'Could not load audit logs.');
+      logBody.replaceChildren();
+      if (!payload.logs || payload.logs.length === 0) {
+        const row = document.createElement('tr'); const cell = document.createElement('td');
+        cell.colSpan = 7; cell.className = 'empty-cell'; cell.textContent = 'No Zero-Trust access records yet.';
+        row.appendChild(cell); logBody.appendChild(row); return;
+      }
+      payload.logs.forEach(log => {
+        const row = document.createElement('tr');
+        const date = log.timestamp ? new Date(log.timestamp).toLocaleString() : '';
+        addCell(row, date); addCell(row, log.username); addCell(row, log.role);
+        addCell(row, log.resource); addCell(row, log.risk_score);
+        addCell(row, log.decision, log.decision === 'ALLOW' ? 'zt-log-allow' : 'zt-log-deny');
+        addCell(row, log.reason); logBody.appendChild(row);
+      });
+    } catch (error) {
+      logBody.replaceChildren();
+      const row = document.createElement('tr'); const cell = document.createElement('td');
+      cell.colSpan = 7; cell.className = 'empty-cell'; cell.textContent = error.message;
+      row.appendChild(cell); logBody.appendChild(row);
+    }
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const risk = Number(document.getElementById('zt-risk').value);
+    if (!Number.isInteger(risk) || risk < 0 || risk > 100) {
+      setMessage('Risk score must be a whole number from 0 to 100.', 'error'); return;
+    }
+    const requestData = {
+      username: document.getElementById('zt-user').value.trim(),
+      role: document.getElementById('zt-role').value,
+      resource: document.getElementById('zt-resource').value,
+      device_trusted: document.getElementById('zt-device').value === 'trusted',
+      mfa_verified: document.getElementById('zt-mfa').value === 'verified',
+      risk_score: risk
+    };
+    if (!requestData.username) { setMessage('Enter a username.', 'error'); return; }
+    evaluateButton.disabled = true;
+    evaluateButton.textContent = 'Evaluating…';
+    setMessage('Submitting request to the Flask Zero-Trust engine…', '');
+    try {
+      const response = await fetch('/api/zero-trust/evaluate', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(requestData)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.status !== 'success') throw new Error(result.error || 'Access evaluation failed.');
+      renderDecision(result, requestData);
+      setMessage('Decision saved successfully to the Zero-Trust audit database.', 'success');
+      await loadLogs();
+    } catch (error) {
+      setMessage(error.message || 'Could not evaluate access. Check the Flask server.', 'error');
+    } finally {
+      evaluateButton.disabled = false;
+      evaluateButton.innerHTML = '<i data-lucide="shield-check"></i> Evaluate access request';
+      if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+    }
+  });
+
+  refreshButton.addEventListener('click', loadLogs);
+  loadLogs();
+})();
+</script>
+
+
+<style>
+  .report-actions { display:flex; flex-wrap:wrap; gap:9px; }
+  #report-zt-metrics { margin:18px 0; }
+  #report-zt-status { margin:10px 0; }
+  #report-zt-status.error { color:#ff8585; }
+  #report-zt-status.success { color:#59d6a3; }
+  @media(max-width:600px) { .report-actions { width:100%; } .report-actions button { flex:1; } }
+</style>
+
+<script>
+(() => {
+  const body = document.getElementById('report-zt-audit-body');
+  const status = document.getElementById('report-zt-status');
+  const refresh = document.getElementById('report-refresh-zt');
+  const download = document.getElementById('download-zt-audit');
+  if (!body || !status || !refresh || !download) return;
+
+  let cachedLogs = [];
+
+  function setStatus(message, kind) {
+    status.textContent = message;
+    status.className = 'upload-hint' + (kind ? ' ' + kind : '');
+  }
+
+  function cell(row, value, className) {
+    const td = document.createElement('td');
+    td.textContent = value === null || value === undefined ? '' : String(value);
+    if (className) td.className = className;
+    row.appendChild(td);
+  }
+
+  async function loadReportLogs() {
+    refresh.disabled = true;
+    setStatus('Retrieving records from the Flask audit API…', '');
+    body.replaceChildren();
+    try {
+      const response = await fetch('/api/zero-trust/logs');
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.status !== 'success') {
+        throw new Error(payload.error || 'Unable to retrieve Zero-Trust audit logs.');
+      }
+      cachedLogs = Array.isArray(payload.logs) ? payload.logs : [];
+      document.getElementById('report-total-logs').textContent = cachedLogs.length;
+      document.getElementById('report-allowed-logs').textContent =
+        cachedLogs.filter(item => item.decision === 'ALLOW').length;
+      document.getElementById('report-denied-logs').textContent =
+        cachedLogs.filter(item => item.decision === 'DENY').length;
+
+      if (!cachedLogs.length) {
+        const row = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.className = 'empty-cell';
+        td.textContent = 'No Zero-Trust access decisions have been recorded yet.';
+        row.appendChild(td);
+        body.appendChild(row);
+      } else {
+        cachedLogs.forEach(log => {
+          const row = document.createElement('tr');
+          let timestamp = log.timestamp || '';
+          if (timestamp) {
+            const parsed = new Date(timestamp);
+            if (!Number.isNaN(parsed.getTime())) timestamp = parsed.toLocaleString();
+          }
+          cell(row, timestamp);
+          cell(row, log.username);
+          cell(row, log.role);
+          cell(row, log.resource);
+          cell(row, log.risk_score);
+          cell(row, log.decision, log.decision === 'ALLOW' ? 'zt-log-allow' : 'zt-log-deny');
+          cell(row, log.reason);
+          body.appendChild(row);
+        });
+      }
+      setStatus('Loaded ' + cachedLogs.length + ' persistent audit record(s).', 'success');
+    } catch (error) {
+      cachedLogs = [];
+      document.getElementById('report-total-logs').textContent = '—';
+      document.getElementById('report-allowed-logs').textContent = '—';
+      document.getElementById('report-denied-logs').textContent = '—';
+      const row = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 7;
+      td.className = 'empty-cell';
+      td.textContent = error.message;
+      row.appendChild(td);
+      body.appendChild(row);
+      setStatus('Could not load audit records. Confirm that Flask is running.', 'error');
+    } finally {
+      refresh.disabled = false;
+    }
+  }
+
+  function exportCsv() {
+    if (!cachedLogs.length) {
+      setStatus('There are no audit records to export yet.', 'error');
+      return;
+    }
+    const columns = ['timestamp', 'username', 'role', 'resource', 'risk_score', 'decision', 'reason'];
+    const quote = value => '"' + String(value === null || value === undefined ? '' : value).replace(/"/g, '""') + '"';
+    const lines = [columns.join(',')];
+    cachedLogs.forEach(log => lines.push(columns.map(key => quote(log[key])).join(',')));
+    const blob = new Blob([lines.join('\r\n')], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'zero_trust_audit_report.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setStatus('CSV export started for ' + cachedLogs.length + ' audit record(s).', 'success');
+  }
+
+  refresh.addEventListener('click', loadReportLogs);
+  download.addEventListener('click', exportCsv);
+  loadReportLogs();
+})();
+</script>
+
+</body>
+</html>
