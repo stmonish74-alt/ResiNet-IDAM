@@ -1,0 +1,10 @@
+
+duration,protocol_type,service,src_bytes,dst_bytes,failed_logins,label
+12,tcp,http,1200,3400,0,normal
+4,tcp,ftp,450,100,3,attack
+30,udp,dns,200,800,0,normal
+2,tcp,http,5000,100,5,attack
+18,tcp,https,2300,5600,0,normal
+1,udp,dns,50,10,8,attack
+25,tcp,http,1800,4200,0,normal
+3,tcp,ftp,600,80,4,attack
