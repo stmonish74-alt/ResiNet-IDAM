@@ -1,4 +1,13 @@
 
+import os
+import sys
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 from flask import Flask, render_template, request, jsonify
 
 from backend.dashboard import get_dashboard_data, get_recent_events
@@ -14,6 +23,7 @@ from backend.zero_trust import (
     evaluate_access,
     get_access_logs
 )
+
 
 
 app = Flask(__name__)
